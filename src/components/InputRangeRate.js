@@ -4,11 +4,12 @@ import 'react-input-range/lib/css/index.css'
 import InputRange from 'react-input-range';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export default function InputRangeRate() {
+export default function InputRangeRate(props) {
 
     let [value, setValue] = useState({min: 0, max: 10})
     let onChange = (value) => {
         setValue(value)
+        props.onFilterRating(value)
     }
 
     return (

@@ -3,13 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 export default function Movie(props) {
-    let htmlMovies = props.movieList.map((item) => {
+    let htmlMovies = props.movieList.map((item, i) => {
         return (
-            <div key={item.id} className="col-lg-4 mt-5 mx-0 ">
-                <div className="card" style={{ width: '18rem' }}>
-                    <img src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${item.poster_path}`} className="card-img-top" alt="..." />
+            <div key={item.id} className="col-lg-3 mt-5 mx-0 ">
+                <div className="card w-100 h-100" style={{ width: '18rem' }}>
+                    <img src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${item.poster_path}`} className="h-100 card-img-top" alt="..." />
                 </div>
-                <div className="modal fade" id="myModal">
+                <span type="button" data-toggle="modal" data-target={`#myModal-${i}`}>
+                        View More
+                </span>
+                <div className="modal fade" id={`myModal-${i}`}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
@@ -32,9 +35,7 @@ export default function Movie(props) {
                         </div>
                     </div>
                 </div>
-                <span type="button" data-toggle="modal" data-target="#myModal">
-                        View More
-                </span>
+                
             </div>
         )
 

@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap'
-
+import logo from '../image/logo.png'
 export default function NavbarMovie(props) {
 
     const [keyword, setKeyword] = useState('')
@@ -13,8 +13,8 @@ export default function NavbarMovie(props) {
 
     return (
         <div>
-            <Navbar bg="dark" variant="dark">
-                <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+            <Navbar style={{background: 'black'}} variant="dark">
+                <Navbar.Brand href="#home"><img style={{height: '50px', width:'60px'}} src={logo} alt=""/></Navbar.Brand>
                 <Nav className="mr-auto">
                     <Nav.Link href="#home">Home</Nav.Link>
                     <Nav.Link href="#features">Features</Nav.Link>
