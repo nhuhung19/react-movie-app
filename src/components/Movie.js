@@ -10,14 +10,24 @@ export default function Movie(props) {
     //         return genres.map((el, i) => <span className="mr-2 rounded-pill bg-success p-2 text-light" key={i}>{el.name}</span>)
     //     }
     // }
+    // console.log(props.movieList.genre_ids)
+    
     let htmlMovies = props.movieList.map((item, i) => {
+        let genreNames = []
+        for(let i = 0; i < item.genre_ids.length; i++){
+            if(props.genres.length > 0){
+                let genreName = (props.genres.find(el => el.id ===  item.genre_ids[i])).name
+                genreNames.push(genreName)
+            }
+        }
+        // console.log(genreNames)
         return (
             <div key={item.id} className="col-lg-3 col-md-4 mt-5 mx-0 ">
                 <div className="card w-100 h-100" style={{ width: '18rem' }}>
                     <img src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${item.poster_path}`} className="h-100 card-img-top" alt="..." />
                 </div>
-                <div class="d-flex justify-content-between px-1">
-                    <span type="button" data-toggle="modal" data-target={`#myModal-${i}`}>
+                <div className="d-flex justify-content-between px-1 mt-1">
+                    <span className="text-danger" type="button" data-toggle="modal" data-target={`#myModal-${i}`}>
                         View More
                 </span>
                     <span className="text-light"><FontAwesomeIcon icon={faStar} style={{ color: 'yellow' }} /> {item.vote_average}</span>
@@ -40,7 +50,7 @@ export default function Movie(props) {
                                     <li className="list-group-item">Rating: {item.vote_average} / Popularity: {item.popularity}</li>
                                     <li className="list-group-item">Day Release: {item.release_date}</li>
                                     <li className="list-group-item">Vote Count: {item.vote_count}</li>
-                                    {/* <li className="list-group-item">{renderGenres(item.genres)}</li> */}
+                                    <li className="list-group-item">{genreNames.map(gener => <span className="mr-2 rounded-pill bg-success p-2 text-light">{gener}</span>)}</li>
                                 </ul>
                             </div>
                             <div className="modal-footer">

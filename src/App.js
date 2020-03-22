@@ -4,7 +4,7 @@ import './App.css';
 import Movie from './components/Movie'
 import NavbarMovie from './components/NavbarMovie'
 import InputRangeRate from './components/InputRangeRate'
-import Filter from './components/Filter'
+import SideBar from './components/SideBar'
 import Banner from './components/Banner'
 import { findAllByAltText } from '@testing-library/react';
 
@@ -21,13 +21,13 @@ function App() {
         let data = await fetch(url)
         let dataResult = await data.json()
         console.log('data', dataResult)
-        
         movieList = dataResult.results
-        movieList.map(movie => {
-            movie.genres = movie.genre_ids.map(genre => genres.find(el => el.id === genre))
-        })
+        // movieList.map(movie => {
+        //     movie.genres = movie.genre_ids.map(genre => genres.find(el => el.id === genre))
+        // })
         console.log('data array', dataResult.results)
         setMovies(dataResult.results)
+        
     }
 
     let fetchGenres = async () => {
@@ -78,20 +78,18 @@ function App() {
     let onFilterRating = (rating) => {
         console.log(rating)
         console.log(rating.min, rating.max)
-        setMovies(movies.filter((movie) => movie.vote_average >= rating.min && movie.vote_average <= rating.max))
-        if (rating.min === 0 && rating.max === 10) {
-            setMovies(movieList)
-        }
+        setMovies(movieList.filter((movie) => movie.vote_average >= rating.min && movie.vote_average <= rating.max))
         console.log('rating movie', movies)
     }
 
     useEffect(() => {
+        currentPlaying()
         fetchGenres()
     }, [])
 
-    useEffect(() => {
-        currentPlaying()
-    }, [genres]) // put genres inside array mean. hey, if genres change exicute function currentPlaying
+    // useEffect(() => {
+    //     currentPlaying()
+    // }, [genres]) // put genres inside array mean. hey, if genres change exicute function currentPlaying
 
 
     if (movies === []) {
@@ -116,13 +114,13 @@ function App() {
                 <InputRangeRate onFilterRating={onFilterRating} />
             </div>
             <div className="row mt-2 w-100">
-                <div className="col-lg-2 col-md-2 mt-5">
-                    <Filter onFilterCategory={onFilterCategory}
+                <div className="col-lg-2 col-md-2 mt-5  ">
+                    <SideBar onFilterCategory={onFilterCategory}
                         onSortByHighestPopularity={onSortByHighestPopularity}
                         onSortByLowestPopularity={onSortByLowestPopularity} />
                 </div>
                 <div className="col-lg-9 col-md-9">
-                    <Movie movieList={movies} />
+                    <Movie movieList={movies} genres={genres}/>
                 </div>
                 <div className="col-lg-1 col-md-0"></div>
             </div>

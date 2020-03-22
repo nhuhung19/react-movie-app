@@ -14,7 +14,7 @@ export default function InputRangeRate(props) {
 
     return (
         <form className="w-50 text-center " >
-            <InputRange 
+            <InputRange
                 style={{ color: 'red' }}
                 maxValue={10}
                 minValue={0}
@@ -22,7 +22,7 @@ export default function InputRangeRate(props) {
                 onChange={onChange} 
                 
                  />
-                <span style={{ color: 'yellow' }}>Rating</span>
+                <span style={{ color: 'white' }}>Rating Star</span>
         </form>
     )
 }

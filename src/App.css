@@ -3,6 +3,10 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.App .body .modal-backdrop.fade.in {
-    z-index: 0 !important;
+.side-bar button .dropdown-item {
+    color: white;
+}
+
+.side-bar button .dropdown-item:hover {
+    color: black
 }
