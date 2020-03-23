@@ -15,7 +15,6 @@ export default function InputRangeRate(props) {
     return (
         <form className="w-50 text-center " >
             <InputRange className="range"
-                style={{ color: 'red' }}
                 maxValue={10}
                 minValue={0}
                 value={value}

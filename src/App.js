@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
 import Movie from './components/Movie'
 import NavbarMovie from './components/NavbarMovie'
 import InputRangeRate from './components/InputRangeRate'
-import SideBar from './components/SideBar'
+// import SideBar from './components/SideBar'
 import Banner from './components/Banner'
 import ReactModal from 'react-modal';
 import YouTube from '@u-wave/react-youtube';
+import Pagination from "react-js-pagination";
+import './App.css';
 
 const apiKey = process.env.REACT_APP_APIKEY
 let movieList = []
@@ -18,6 +19,8 @@ function App() {
     let [modal, setModal] = useState(false)
     let [movieVideo, setMovieVideo] = useState('')
     let [categoryLoadMore, setcategoryLoadMore] = useState("now_playing")
+    let [pageNumber, setPageNumber] = useState(1)
+    let [totalMovie, setTotalMovie] = useState(0)
     let currentPlaying = async () => {
         // console.log(apiKey)
         let url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=en-US&page=1`
@@ -30,6 +33,7 @@ function App() {
         // })
         console.log('data array', dataResult.results)
         setMovies(dataResult.results)
+        setTotalMovie(dataResult.total_results)
 
     }
 
@@ -60,12 +64,14 @@ function App() {
         setcategoryLoadMore(catergory)
     }
 
-    let onShowVideo = async(movieId) => {
+    let onShowVideo = async (movieId) => {
         let url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=en-US;`
         let data = await fetch(url)
         let respones = await data.json()
         setModal(true)
-        setMovieVideo(respones.results[0].key)
+        if (respones.results.length > 0) {
+            setMovieVideo(respones.results[0].key)
+        }
         console.log(respones)
     }
 
@@ -94,6 +100,14 @@ function App() {
         console.log('rating movie', movies)
     }
 
+    let handlePageChange = async (pageNumber) => {
+        setPageNumber(pageNumber)
+        let url = `https://api.themoviedb.org/3/movie/${categoryLoadMore}?api_key=${apiKey}&language=en-US&page=${pageNumber}`
+        let data = await fetch(url)
+        let dataResult = await data.json()
+        setMovies(dataResult.results)
+    }
+
     useEffect(() => {
         currentPlaying()
         fetchGenres()
@@ -113,8 +127,13 @@ function App() {
     }
     return (
         <div className="App">
-            <NavbarMovie onSearch={onSearch} />
-            <div className="row w-100">
+            <NavbarMovie 
+                onSearch={onSearch}
+                onFilterCategory={onFilterCategory}
+                onSortByHighestPopularity={onSortByHighestPopularity}
+                onSortByLowestPopularity={onSortByLowestPopularity}
+            />
+            <div className="row w-100" style={{ paddingTop: '100px' }}>
                 <div className="col-lg-1"></div>
                 <div className="col-lg-10">
                     <Banner />
@@ -126,23 +145,32 @@ function App() {
                 <InputRangeRate onFilterRating={onFilterRating} />
             </div>
             <div className="row mt-2 w-100">
-                <div className="col-lg-2 col-md-2 mt-5  ">
-                    <SideBar onFilterCategory={onFilterCategory}
-                        onSortByHighestPopularity={onSortByHighestPopularity}
-                        onSortByLowestPopularity={onSortByLowestPopularity} />
+                <div className="col-lg-2 col-md-2">
+                   
                 </div>
-                <div className="col-lg-9 col-md-9">
-                    <Movie movieList={movies} genres={genres} onShowVideo={onShowVideo}/>
+                <div className="col-lg-8 col-md-9">
+                    <Movie movieList={movies} genres={genres} onShowVideo={onShowVideo} />
                 </div>
-                <ReactModal 
-                isOpen={modal}
-                onRequestClose={() => setModal(false)}
-                style={{ overlay: {display:"flex",justifyContent:"center"}, content: {width:"70%",height:"70%", position:"relative"} }}>
-                    <YouTube className="youtube-video" video={movieVideo} autoplay/>
+                <ReactModal
+                    isOpen={modal}
+                    onRequestClose={() => setModal(false)}
+                    style={{ overlay: { display: "flex", justifyContent: "center" }, content: { width: "70%", height: "70%", position: "relative" } }}>
+                    <YouTube className="youtube-video" video={movieVideo} autoplay />
                 </ReactModal>
-                <div className="col-lg-1 col-md-0"></div>
+                <div className="col-lg-2 col-md-2"></div>
             </div>
-            <button onClick={() => loadMoreMovie(categoryLoadMore)}>Load More</button>
+            {/* <button onClick={() => loadMoreMovie(categoryLoadMore)}>Load More</button> */}
+            <div className="d-flex justify-content-center py-5">
+                <Pagination className="pagination"
+                    itemClass="page-item"
+                    linkClass="page-link"
+                    activePage={pageNumber}
+                    itemsCountPerPage={20}
+                    totalItemsCount={totalMovie}
+                    pageRangeDisplayed={7}
+                    onChange={handlePageChange}
+                />
+            </div>
         </div>
     );
 }
