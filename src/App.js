@@ -6,7 +6,8 @@ import NavbarMovie from './components/NavbarMovie'
 import InputRangeRate from './components/InputRangeRate'
 import SideBar from './components/SideBar'
 import Banner from './components/Banner'
-import { findAllByAltText } from '@testing-library/react';
+import ReactModal from 'react-modal';
+import YouTube from '@u-wave/react-youtube';
 
 const apiKey = process.env.REACT_APP_APIKEY
 let movieList = []
@@ -14,6 +15,8 @@ let page = 1
 function App() {
     let [movies, setMovies] = useState([])
     let [genres, setGenres] = useState([])
+    let [modal, setModal] = useState(false)
+    let [movieVideo, setMovieVideo] = useState('')
     let [categoryLoadMore, setcategoryLoadMore] = useState("now_playing")
     let currentPlaying = async () => {
         // console.log(apiKey)
@@ -27,7 +30,7 @@ function App() {
         // })
         console.log('data array', dataResult.results)
         setMovies(dataResult.results)
-        
+
     }
 
     let fetchGenres = async () => {
@@ -55,6 +58,15 @@ function App() {
         console.log(dataResult)
         setMovies(dataResult.results)
         setcategoryLoadMore(catergory)
+    }
+
+    let onShowVideo = async(movieId) => {
+        let url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=en-US;`
+        let data = await fetch(url)
+        let respones = await data.json()
+        setModal(true)
+        setMovieVideo(respones.results[0].key)
+        console.log(respones)
     }
 
     let onSearch = (keyword) => {
@@ -120,8 +132,14 @@ function App() {
                         onSortByLowestPopularity={onSortByLowestPopularity} />
                 </div>
                 <div className="col-lg-9 col-md-9">
-                    <Movie movieList={movies} genres={genres}/>
+                    <Movie movieList={movies} genres={genres} onShowVideo={onShowVideo}/>
                 </div>
+                <ReactModal 
+                isOpen={modal}
+                onRequestClose={() => setModal(false)}
+                style={{ overlay: {display:"flex",justifyContent:"center"}, content: {width:"70%",height:"70%", position:"relative"} }}>
+                    <YouTube className="youtube-video" video={movieVideo} autoplay/>
+                </ReactModal>
                 <div className="col-lg-1 col-md-0"></div>
             </div>
             <button onClick={() => loadMoreMovie(categoryLoadMore)}>Load More</button>
