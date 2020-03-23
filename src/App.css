@@ -10,3 +10,8 @@
 .side-bar button .dropdown-item:hover {
     color: black
 }
+
+.video {
+    width:100%;
+    height: 100%;
+}

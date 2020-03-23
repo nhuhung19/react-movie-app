@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Movie from './components/Movie'
@@ -7,12 +8,16 @@ import InputRangeRate from './components/InputRangeRate'
 import SideBar from './components/SideBar'
 import Banner from './components/Banner'
 import { findAllByAltText } from '@testing-library/react';
+import ReactModal from 'react-modal';
+import YouTube from '@u-wave/react-youtube';
 
 const apiKey = process.env.REACT_APP_APIKEY
-let movieList = []
-let page = 1
+let movieList = [];
+let page = 1;
 function App() {
     let [movies, setMovies] = useState([])
+    let [modal, setModal] = useState(false)
+    let [trailor, setTrailor] = useState('')
     let [genres, setGenres] = useState([])
     let [categoryLoadMore, setcategoryLoadMore] = useState("now_playing")
     let currentPlaying = async () => {
@@ -27,7 +32,7 @@ function App() {
         // })
         console.log('data array', dataResult.results)
         setMovies(dataResult.results)
-        
+
     }
 
     let fetchGenres = async () => {
@@ -82,6 +87,16 @@ function App() {
         console.log('rating movie', movies)
     }
 
+    let openModal = async(itemId) => {
+        let url =`https://api.themoviedb.org/3/movie/${itemId}/videos?api_key=${apiKey}&language=en-US`
+        let data = await fetch(url);
+        let resultData = await data.json();
+        console.log("resultData",resultData)
+        setTrailor(resultData.results[0].key)
+        setModal(true);
+      
+    }
+
     useEffect(() => {
         currentPlaying()
         fetchGenres()
@@ -120,11 +135,23 @@ function App() {
                         onSortByLowestPopularity={onSortByLowestPopularity} />
                 </div>
                 <div className="col-lg-9 col-md-9">
-                    <Movie movieList={movies} genres={genres}/>
+                    <Movie movieList={movies} genres={genres} openModal={openModal} />
                 </div>
                 <div className="col-lg-1 col-md-0"></div>
             </div>
             <button onClick={() => loadMoreMovie(categoryLoadMore)}>Load More</button>
+            <ReactModal
+                isOpen={modal}
+                style={{ overlay: {}, contents: {} }}
+                onRequestClose={() => setModal(false)}
+                // ariaHideApp={false}
+            >
+                 <YouTube
+                    video={trailor}
+                    autoplay
+                    className="video"
+                />
+            </ReactModal>
         </div>
     );
 }
