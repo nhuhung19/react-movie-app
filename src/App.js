@@ -7,7 +7,6 @@ import NavbarMovie from './components/NavbarMovie'
 import InputRangeRate from './components/InputRangeRate'
 import SideBar from './components/SideBar'
 import Banner from './components/Banner'
-import { findAllByAltText } from '@testing-library/react';
 import ReactModal from 'react-modal';
 import YouTube from '@u-wave/react-youtube';
 
@@ -19,6 +18,7 @@ function App() {
     let [modal, setModal] = useState(false)
     let [trailor, setTrailor] = useState('')
     let [genres, setGenres] = useState([])
+    let [movieVideo, setMovieVideo] = useState('')
     let [categoryLoadMore, setcategoryLoadMore] = useState("now_playing")
     let currentPlaying = async () => {
         // console.log(apiKey)
@@ -60,6 +60,18 @@ function App() {
         console.log(dataResult)
         setMovies(dataResult.results)
         setcategoryLoadMore(catergory)
+    }
+
+    let onShowVideo = async(movieId) => {
+        let url = `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=en-US;`
+        let data = await fetch(url)
+        let respones = await data.json()
+        console.log(respones.results[0].key) // before trying to grab the first element inside respones.results, make sure the length is > 0
+        if(respones.results.length > 0){
+            setMovieVideo(respones.results[0].key)
+            setModal(true)  // only show the modal if results.length >0
+        }
+        else return // not showing any modal if there's no video
     }
 
     let onSearch = (keyword) => {
@@ -135,23 +147,22 @@ function App() {
                         onSortByLowestPopularity={onSortByLowestPopularity} />
                 </div>
                 <div className="col-lg-9 col-md-9">
-                    <Movie movieList={movies} genres={genres} openModal={openModal} />
+                    <Movie movieList={movies} genres={genres} openModal = {onShowVideo}/>
                 </div>
+                <ReactModal 
+                isOpen={modal}
+                onRequestClose={() => setModal(false)}
+                style={{ overlay: {display:"flex",justifyContent:"center"}, content: {width:"70%",height:"70%", position:"relative"} }}>
+                    <YouTube 
+                        className="youtube-video" 
+                        video={movieVideo} 
+                        autoplay
+                    />
+                </ReactModal>
                 <div className="col-lg-1 col-md-0"></div>
             </div>
             <button onClick={() => loadMoreMovie(categoryLoadMore)}>Load More</button>
-            <ReactModal
-                isOpen={modal}
-                style={{ overlay: {}, contents: {} }}
-                onRequestClose={() => setModal(false)}
-                // ariaHideApp={false}
-            >
-                 <YouTube
-                    video={trailor}
-                    autoplay
-                    className="video"
-                />
-            </ReactModal>
+           
         </div>
     );
 }

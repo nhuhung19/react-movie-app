@@ -27,7 +27,7 @@ export default function Movie(props) {
                     <img onClick={()=>props.openModal(item.id)}  src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2/${item.poster_path}`} className="h-100 card-img-top" alt="..." />
                 </div>
                 <div className="d-flex justify-content-between px-1 mt-1">
-                    <span className="text-danger" type="button" data-toggle="modal" data-target={`#myModal-${i}`}>
+                    <span style={{ color: '#E50914' }} type="button" data-toggle="modal" data-target={`#myModal-${i}`}>
                         View More
                 </span>
                     <span className="text-light"><FontAwesomeIcon icon={faStar} style={{ color: 'yellow' }} /> {item.vote_average}</span>
