@@ -135,7 +135,7 @@ function App() {
             />
             <div className="row w-100" style={{ paddingTop: '100px' }}>
                 <div className="col-lg-1"></div>
-                <div className="col-lg-10">
+                <div className="col-lg-10 banner">
                     <Banner />
                 </div>
                 <div className="col-lg-1"></div>
@@ -151,7 +151,7 @@ function App() {
                 <div className="col-lg-8 col-md-9">
                     <Movie movieList={movies} genres={genres} onShowVideo={onShowVideo} />
                 </div>
-                <ReactModal
+                <ReactModal className="modal-trailer"
                     isOpen={modal}
                     onRequestClose={() => setModal(false)}
                     style={{ overlay: { display: "flex", justifyContent: "center" }, content: { width: "70%", height: "70%", position: "relative" } }}>
