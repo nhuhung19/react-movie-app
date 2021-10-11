@@ -113,6 +113,8 @@ function App() {
         fetchGenres()
     }, [])
 
+    // hung test
+
     // useEffect(() => {
     //     currentPlaying()
     // }, [genres]) // put genres inside array mean. hey, if genres change exicute function currentPlaying
